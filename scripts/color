@@ -2,19 +2,40 @@
 
 # TODO (Run this script as): color magenta && echo hello && color reset
 
+# you can run the script in the following two ways:
+#   color magenta && echo "Hello" && color reset
+#   color rgb 255 0 255 && echo "Custom RGB" && color reset
+
 color() {
-    echo -ne "\033[$1;$2m"
+    if [[ $1 == "rgb" && $# -eq 4 ]]; then
+        echo -ne "\033[38;2;$2;$3;$4m"
+    elif [[ $1 == "bg-rgb" && $# -eq 4 ]]; then
+        echo -ne "\033[48;2;$2;$3;$4m"
+    else
+        echo -ne "\033[$1;$2m"
+    fi
 }
 
 declare -A color_mapping=(
-    # TODO: Add more color values
-    # Refer bash color codes
+    ['black']=30
+    ['red']=31
+    ['green']=32
+    ['yellow']=33
+    ['blue']=34
     ['magenta']=35
+    ['cyan']=36
+    ['white']=37
+    ['reset']=0
 )
 
-if [[ $1 == 'reset' ]]; then
-    color 0 00
-else
-    color 1 ${color_mapping[$1]}
+if [[ -n "${color_mapping[$1]}" ]]; then
+    if [[ $1 == "reset" ]]; then
+        color 0 00
+    else
+        color 1 ${color_mapping[$1]}
+    fi
+elif [[ $1 == "rgb" && $# -eq 4 ]]; then
+    color rgb $2 $3 $4 
+elif [[ $1 == "bg-rgb" && $# -eq 4 ]]; then
+    color bg-rgb $2 $3 $4
 fi
-
