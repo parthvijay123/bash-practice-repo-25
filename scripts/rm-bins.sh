@@ -2,3 +2,12 @@
 
 # Remove all the binary files (usually made after gcc) present inside current directory
 # Refer "man find" for more information, you can also use modern tool like fd instead of find
+
+for file in *; do
+    if [ -f "$file" ]; then
+        if file "$file" | grep -q "Mach-O"; then
+            echo "Removing: $file"
+            rm -v "$file"
+        fi
+    fi
+done
